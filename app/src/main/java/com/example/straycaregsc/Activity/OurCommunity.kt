@@ -1,10 +1,10 @@
-package com.example.straycaregsc
+package com.example.straycaregsc.Activity
 
 import android.content.Intent
-import android.media.Image
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.ImageView
+import com.example.straycaregsc.R
 
 class OurCommunity : AppCompatActivity() {
     lateinit var ivBackBtnOC:ImageView

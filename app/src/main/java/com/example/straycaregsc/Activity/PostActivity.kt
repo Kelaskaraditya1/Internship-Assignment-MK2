@@ -1,6 +1,5 @@
-package com.example.straycaregsc
+package com.example.straycaregsc.Activity
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -21,11 +20,13 @@ import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
 import android.content.Context
 import android.provider.OpenableColumns
+import com.example.straycaregsc.R
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.io.InputStream
+import kotlin.toString
 
 class PostActivity : AppCompatActivity() {
     lateinit var  ivBackBtn:ImageView
@@ -210,7 +211,7 @@ class PostActivity : AppCompatActivity() {
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 0 &&  data != null){
+        if (resultCode == RESULT_OK && requestCode == 0 &&  data != null){
             postPath = data.data!!
             Picasso.get().load(postPath).into(ivUploadImg)
             isPostImgSelected = true
@@ -228,9 +229,9 @@ class PostActivity : AppCompatActivity() {
         fileName: String,
         onResult: (String?) -> Unit
     ) {
-        val supabaseUrl = "https://fbukvpckplkfqyubogoq.supabase.co"
-        val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZidWt2cGNrcGxrZnF5dWJvZ29xIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxNjAxMDMsImV4cCI6MjA2MDczNjEwM30.WkKMwR24T57ILxcfz8HcskJ1oLgLi1SuULensz5ETCo"
-        val bucketName = "doggy"
+        val supabaseUrl = "https://hffgmmvfeulhhdifqdcb.supabase.co"
+        val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmZmdtbXZmZXVsaGhkaWZxZGNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MDM4NjYsImV4cCI6MjA3NjM3OTg2Nn0.op6j6zamhOuV4RvofD2yGHeVikjTT2x5M9cQXlW_Kgg"
+        val bucketName = "StrayCare"
 
         try {
             val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)

@@ -1,4 +1,4 @@
-package com.example.straycaregsc
+package com.example.straycaregsc.Activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -11,9 +11,11 @@ import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
 import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
+import kotlin.toString
 
 class SignUpActivity : AppCompatActivity() {
     lateinit var  ivBackBtn: ImageView

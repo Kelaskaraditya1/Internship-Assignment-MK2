@@ -1,6 +1,5 @@
-package com.example.straycaregsc
+package com.example.straycaregsc.Activity
 
-import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
@@ -10,6 +9,7 @@ import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.R
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -136,7 +136,7 @@ class UserProfileActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 0 &&  data != null){
+        if (resultCode == RESULT_OK && requestCode == 0 &&  data != null){
             userDpPath = data.data!!
             Picasso.get().load(userDpPath).into(civUserDp)
             uploadImage(userDpPath, successListener = OnSuccessListener {

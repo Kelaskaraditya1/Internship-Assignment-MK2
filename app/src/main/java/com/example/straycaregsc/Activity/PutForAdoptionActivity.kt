@@ -1,10 +1,11 @@
-package com.example.straycaregsc
+package com.example.straycaregsc.Activity
 
-import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -14,10 +15,20 @@ import android.widget.TextView
 import android.widget.Toast
 import com.example.straycaregsc.Models.AdoptArrayModel
 import com.example.straycaregsc.Models.AdoptPostsModel
+import com.example.straycaregsc.R
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.Response
+import java.io.IOException
+import java.io.InputStream
 
 class PutForAdoptionActivity : AppCompatActivity() {
     private lateinit var backBtn:ImageView
@@ -104,9 +115,38 @@ class PutForAdoptionActivity : AppCompatActivity() {
                 adoptPostsModel.considerations = etSpecialConsiderations.text.toString()
                 adoptPostsModel.details = etDetailsOfPet.text.toString()
                 adoptPostsModel.location = etLocation.text.toString()
-                uploadImage(adoptPostUrl, successListener = {
+//                uploadImage(adoptPostUrl, successListener = {
+//                    Log.i("adi", "${adoptPostUrl}")
+//                    adoptPostsModel.imageUrl = it.toString()
+//                    adoptArrayModel.adoptPostsArray.add(adoptPostsModel)
+//                    FirebaseFirestore.getInstance().collection("adopt posts")
+//                        .document("all posts")
+//                        .set(adoptArrayModel)
+//                        .addOnCompleteListener{
+//                            if(it.isSuccessful){
+//                                hideProgressBar()
+//                                Toast.makeText(this@PutForAdoptionActivity,"Posted successfully",Toast.LENGTH_SHORT).show()
+//                                startActivity(Intent(this@PutForAdoptionActivity,HomePageActivity::class.java))
+//                            }
+//                            else{
+//                                hideProgressBar()
+//                                Toast.makeText(this@PutForAdoptionActivity,"Post unsuccessful",Toast.LENGTH_SHORT).show()
+//
+//                            }
+//                        }
+//                })
+
+                uploadImageFromUri(
+                    context = this,
+                    imageUri = adoptPostUrl,
+                    fileName = getFileNameFromUri(
+                        context = this,
+                        uri = adoptPostUrl
+                    )
+
+                ) { downloadUrl->
                     Log.i("adi", "${adoptPostUrl}")
-                    adoptPostsModel.imageUrl = it.toString()
+                    adoptPostsModel.imageUrl = downloadUrl.toString()
                     adoptArrayModel.adoptPostsArray.add(adoptPostsModel)
                     FirebaseFirestore.getInstance().collection("adopt posts")
                         .document("all posts")
@@ -123,7 +163,10 @@ class PutForAdoptionActivity : AppCompatActivity() {
 
                             }
                         }
-                })
+
+                }
+
+
 
             }
         }
@@ -169,7 +212,7 @@ class PutForAdoptionActivity : AppCompatActivity() {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 1&&  data != null){
+        if (resultCode == RESULT_OK && requestCode == 1&&  data != null){
                 adoptPostUrl = data.data!!
                Picasso.get()
                    .load(adoptPostUrl)
@@ -188,4 +231,71 @@ class PutForAdoptionActivity : AppCompatActivity() {
         finish()
         startActivity(Intent(this@PutForAdoptionActivity,HomePageActivity::class.java))
     }
+
+    fun uploadImageFromUri(
+        context: Context,
+        imageUri: Uri,
+        fileName: String,
+        onResult: (String?) -> Unit
+    ) {
+        val supabaseUrl = "https://hffgmmvfeulhhdifqdcb.supabase.co"
+        val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmZmdtbXZmZXVsaGhkaWZxZGNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MDM4NjYsImV4cCI6MjA3NjM3OTg2Nn0.op6j6zamhOuV4RvofD2yGHeVikjTT2x5M9cQXlW_Kgg"
+        val bucketName = "StrayCare"
+
+        try {
+            val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
+            val bytes = inputStream?.readBytes()
+
+            if (bytes == null) {
+                Log.e("UploadImage", "Failed to read image bytes")
+                onResult(null)
+                return
+            }
+
+            val client = OkHttpClient()
+            val mediaType = "image/jpeg".toMediaTypeOrNull()
+            val requestBody = bytes.toRequestBody(mediaType)
+
+            val request = Request.Builder()
+                .url("$supabaseUrl/storage/v1/object/$bucketName/$fileName")
+                .header("Authorization", "Bearer $supabaseKey")
+                .put(requestBody)
+                .build()
+
+            client.newCall(request).enqueue(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    Log.e("UploadImage", "Upload failed: ${e.message}")
+                    onResult(null)
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    if (response.isSuccessful) {
+                        val downloadUrl = "$supabaseUrl/storage/v1/object/public/$bucketName/$fileName"
+                        onResult(downloadUrl)
+                    } else {
+                        Log.e("UploadImage", "Upload failed: ${response.code} - ${response.message}")
+                        onResult(null)
+                    }
+                }
+            })
+        } catch (e: Exception) {
+            Log.e("UploadImage", "Unexpected error: ${e.message}")
+            onResult(null)
+        }
+    }
+
+
+    fun getFileNameFromUri(context: Context, uri: Uri): String {
+        var result: String? = null
+        if (uri.scheme == "content") {
+            val cursor = context.contentResolver.query(uri, null, null, null, null)
+            cursor?.use {
+                if (it.moveToFirst()) {
+                    result = it.getString(it.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
+                }
+            }
+        }
+        return result ?: uri.lastPathSegment ?: "default.jpg"
+    }
+
 }
