@@ -32,19 +32,20 @@
                 android:layout_gravity="center"
                 android:layout_marginStart="25dp"
                 android:layout_weight="8">
+
                 <TextView
                     android:id="@+id/tvUserNameAP"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:text="Aditya Sood"
-                    android:textStyle="bold"
-                    android:layout_weight="1"
-                    android:gravity="center_vertical"
                     android:layout_gravity="center"
-                    android:textFontWeight="600"
+                    android:layout_weight="1"
                     android:fontFamily="@font/poppins"
+                    android:gravity="center_vertical"
+                    android:text="Aditya Kelaskar"
                     android:textColor="@color/black"
-                    android:textSize="16sp" />
+                    android:textFontWeight="600"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
 
                     <TextView
                         android:layout_gravity="center"

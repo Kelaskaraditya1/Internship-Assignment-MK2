@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso
 import android.content.Context
 import android.provider.OpenableColumns
 import com.example.straycaregsc.R
+import com.google.firebase.database.FirebaseDatabase
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
@@ -103,25 +104,58 @@ class PostActivity : AppCompatActivity() {
     }
 
 
-    private fun savePost() {
-        Log.i("adi", "save post called")
-        postModel.id = FirebaseFirestore.getInstance().collection("posts").document().id
+        private fun savePost() {
+//            Log.i("adi", "save post called")
+//            postModel.id = FirebaseFirestore.getInstance().collection("posts").document().id
+//
+//            globalPostsModel.postsArray.add(postModel)
+//            FirebaseFirestore.getInstance().collection("posts").document("global posts")
+//                .set(globalPostsModel)
+//                .addOnCompleteListener{
+//                    if(it.isSuccessful){
+//                        Toast.makeText(this@PostActivity,"Posted successfully",Toast.LENGTH_SHORT).show()
+//                        launchHomePageActivity()
+//                        finish()
+//                    }
+//                    else{
+//                        Log.i("adi", "${it.exception!!.message}")
+//                        Toast.makeText(this@PostActivity,"Error while uploading the post",Toast.LENGTH_SHORT).show()
+//                    }
+//                }
 
-        globalPostsModel.postsArray.add(postModel)
-        FirebaseFirestore.getInstance().collection("posts").document("global posts")
-            .set(globalPostsModel)
-            .addOnCompleteListener{
-                if(it.isSuccessful){
-                    Toast.makeText(this@PostActivity,"Posted successfully",Toast.LENGTH_SHORT).show()
+            Log.i("adi", "save post called (Realtime DB)")
+
+            // 1. Get a reference to the "posts" node in Realtime Database
+            val postsRef = FirebaseDatabase.getInstance().getReference("posts")
+
+            // 2. Generate a unique key for the new post using push()
+            val postId = postsRef.push().key // This creates a unique ID like "-Nq_abc123..."
+
+            if (postId == null) {
+                Log.e("adi", "Couldn't get push key for posts")
+                Toast.makeText(this@PostActivity, "Error generating post ID", Toast.LENGTH_SHORT).show()
+                hideProgressBar() // Assuming you might call showProgressBar before savePost
+                return
+            }
+
+            // 3. (Optional but recommended) Set the generated ID in your post model
+            postModel.id = postId
+
+            // 4. Save the postModel object directly under the unique key
+            postsRef.child(postId).setValue(postModel)
+                .addOnSuccessListener {
+                    // Success!
+                    Toast.makeText(this@PostActivity, "Posted successfully", Toast.LENGTH_SHORT).show()
                     launchHomePageActivity()
                     finish()
                 }
-                else{
-                    Log.i("adi", "${it.exception!!.message}")
-                    Toast.makeText(this@PostActivity,"Error while uploading the post",Toast.LENGTH_SHORT).show()
+                .addOnFailureListener { e ->
+                    // Failure
+                    Log.e("adi", "Error uploading post to Realtime DB: ${e.message}")
+                    Toast.makeText(this@PostActivity, "Error while uploading the post", Toast.LENGTH_SHORT).show()
+                    hideProgressBar() // Make sure to handle UI state on failure too
                 }
-            }
-    }
+        }
 
     private fun resetPostModel() {
         postModel.id = null

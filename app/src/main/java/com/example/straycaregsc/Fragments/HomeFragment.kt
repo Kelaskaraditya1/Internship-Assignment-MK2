@@ -18,13 +18,20 @@ import com.example.straycaregsc.Models.GlobalPostsModel
 import com.example.straycaregsc.Models.PostModel
 import com.example.straycaregsc.R
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.database.DataSnapshot // <-- Import
+import com.google.firebase.database.DatabaseError // <-- Import
+
 
 class HomeFragment : Fragment() {
 
     lateinit var rcvPostsHF :RecyclerView
     lateinit var pbHF :ProgressBar
     lateinit var posts : GlobalPostsModel
+    private var postListener: ValueEventListener? = null
+    private val postsRef = FirebaseDatabase.getInstance().getReference("posts")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,7 +57,7 @@ class HomeFragment : Fragment() {
 
     }
 
-    private fun setPostsRCV(postArray:ArrayList<PostModel>) {
+    private fun setPostsRCV(postArray:List<PostModel>) {
 
         rcvPostsHF.layoutManager = LinearLayoutManager(parentFragment?.context)
         rcvPostsHF.adapter = PostsAdapter(postArray,object:PostsAdapter.Listener{
@@ -85,37 +92,89 @@ class HomeFragment : Fragment() {
     }
 
     private fun fetchPosts(){
-        Log.i("adi", "post fetched is called")
+//        Log.i("adi", "post fetched is called")
+//
+//        showPB()
+//
+//        FirebaseFirestore.getInstance().collection("posts").document("global posts")
+//            .get()
+//            .addOnCompleteListener{
+//                if(it.isSuccessful){
+//                    hidePB()
+//                    Log.i("adi", "post fetched is successfull")
+//                    if(it.result.exists()){
+//                        Log.i("adi", "post fetched result exists")
+//
+//                        try {
+//                             posts= it.result.toObject(GlobalPostsModel::class.java)!!
+//                            setPostsRCV(posts.postsArray)
+//                        }
+//                        catch (e:Exception){
+//                            Log.i("adi", "error:${e}")
+//                        }
+//                    }
+//                    else{
+//                        Log.i("adi", "no result exists")
+//                    }
+//                }
+//                else{
+//                    hidePB()
+//                    Log.i("adi", "not able to fetch posts")
+//                }
+//            }
 
+        Log.i("adi", "fetchPosts called (Realtime DB)")
         showPB()
 
-        FirebaseFirestore.getInstance().collection("posts").document("global posts")
-            .get()
-            .addOnCompleteListener{
-                if(it.isSuccessful){
-                    hidePB()
-                    Log.i("adi", "post fetched is successfull")
-                    if(it.result.exists()){
-                        Log.i("adi", "post fetched result exists")
+        // Define the listener
+        postListener = object : ValueEventListener {
+            override fun onDataChange(dataSnapshot: DataSnapshot) {
+                hidePB()
+                Log.i("adi", "Realtime DB data received")
+                val postsList = mutableListOf<PostModel>()
 
-                        try {
-                             posts= it.result.toObject(GlobalPostsModel::class.java)!!
-                            setPostsRCV(posts.postsArray)
+                // Loop through each child node under "posts"
+                for (postSnapshot in dataSnapshot.children) {
+                    try {
+                        // Try to convert the snapshot into a PostModel object
+                        val post = postSnapshot.getValue(PostModel::class.java)
+                        post?.let {
+                            // If conversion is successful, add it to the list
+                            postsList.add(it)
                         }
-                        catch (e:Exception){
-                            Log.i("adi", "error:${e}")
-                        }
-                    }
-                    else{
-                        Log.i("adi", "no result exists")
+                    } catch (e: Exception) {
+                        Log.e("adi", "Error converting post snapshot: ${e.message}")
                     }
                 }
-                else{
-                    hidePB()
-                    Log.i("adi", "not able to fetch posts")
-                }
+
+                Log.i("adi", "Fetched ${postsList.size} posts successfully")
+                // Pass the list directly to your RecyclerView setup function
+                setPostsRCV(postsList)
             }
+
+            override fun onCancelled(databaseError: DatabaseError) {
+                hidePB()
+                Log.w("adi", "loadPosts:onCancelled", databaseError.toException())
+                Toast.makeText(requireContext(), "Failed to load posts.", Toast.LENGTH_SHORT).show()
+            }
+        }
+
+        // Attach the listener to the "posts" node
+        postsRef.addValueEventListener(postListener!!) // Use !! because we just assigned it
     }
+
+    // --- IMPORTANT: Add this to your Activity/Fragment to prevent memory leaks ---
+    override fun onDestroy() {
+        super.onDestroy()
+        // Remove the listener when the view is destroyed
+        postListener?.let {
+            postsRef.removeEventListener(it)
+        }
+
+    }
+
+
+
     private fun showPB(){
         pbHF.visibility = View.VISIBLE
     }

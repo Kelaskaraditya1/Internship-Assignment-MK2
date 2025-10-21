@@ -15,7 +15,7 @@ import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 
 
-class PostsAdapter(private val postsArray:ArrayList<PostModel>, val listener:Listener):RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
+class PostsAdapter(private val postsArray:List<PostModel>, val listener:Listener):RecyclerView.Adapter<PostsAdapter.ViewHolder>() {
     var posts:GlobalPostsModel = GlobalPostsModel()
      var likes: Int =0
 
