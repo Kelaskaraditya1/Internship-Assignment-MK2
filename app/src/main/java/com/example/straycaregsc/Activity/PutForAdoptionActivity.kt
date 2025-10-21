@@ -17,6 +17,7 @@ import com.example.straycaregsc.Models.AdoptArrayModel
 import com.example.straycaregsc.Models.AdoptPostsModel
 import com.example.straycaregsc.R
 import com.google.android.gms.tasks.OnSuccessListener
+import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
@@ -115,6 +116,7 @@ class PutForAdoptionActivity : AppCompatActivity() {
                 adoptPostsModel.considerations = etSpecialConsiderations.text.toString()
                 adoptPostsModel.details = etDetailsOfPet.text.toString()
                 adoptPostsModel.location = etLocation.text.toString()
+
 //                uploadImage(adoptPostUrl, successListener = {
 //                    Log.i("adi", "${adoptPostUrl}")
 //                    adoptPostsModel.imageUrl = it.toString()
@@ -148,20 +150,49 @@ class PutForAdoptionActivity : AppCompatActivity() {
                     Log.i("adi", "${adoptPostUrl}")
                     adoptPostsModel.imageUrl = downloadUrl.toString()
                     adoptArrayModel.adoptPostsArray.add(adoptPostsModel)
-                    FirebaseFirestore.getInstance().collection("adopt posts")
-                        .document("all posts")
-                        .set(adoptArrayModel)
-                        .addOnCompleteListener{
-                            if(it.isSuccessful){
-                                hideProgressBar()
-                                Toast.makeText(this@PutForAdoptionActivity,"Posted successfully",Toast.LENGTH_SHORT).show()
-                                startActivity(Intent(this@PutForAdoptionActivity,HomePageActivity::class.java))
-                            }
-                            else{
-                                hideProgressBar()
-                                Toast.makeText(this@PutForAdoptionActivity,"Post unsuccessful",Toast.LENGTH_SHORT).show()
 
-                            }
+//                    FirebaseFirestore.getInstance().collection("adopt posts")
+//                        .document("all posts")
+//                        .set(adoptArrayModel)
+//                        .addOnCompleteListener{
+//                            if(it.isSuccessful){
+//                                hideProgressBar()
+//                                Toast.makeText(this@PutForAdoptionActivity,"Posted successfully",Toast.LENGTH_SHORT).show()
+//                                startActivity(Intent(this@PutForAdoptionActivity,HomePageActivity::class.java))
+//                            }
+//                            else{
+//                                hideProgressBar()
+//                                Toast.makeText(this@PutForAdoptionActivity,"Post unsuccessful",Toast.LENGTH_SHORT).show()
+//
+//                            }
+//                        }
+
+                    val adoptionPostsRef = FirebaseDatabase.getInstance().getReference("adoption posts") // Use "adoption posts" as the node name
+
+                    // 2. Generate a unique key for the new adoption post
+                    val postId = adoptionPostsRef.push().key
+
+                    if (postId == null) {
+                        Log.e("RealtimeDB", "Couldn't get push key for adoption posts")
+                        hideProgressBar()
+                        Toast.makeText(this@PutForAdoptionActivity, "Error creating post ID", Toast.LENGTH_SHORT).show()
+                    }
+
+                    // 3. (Optional) Set the ID in your model if it has an ID field
+                    // adoptionPostModel.id = postId
+
+                    // 4. Save the single adoption post object under the unique key
+                    adoptionPostsRef.child(postId.toString()).setValue(adoptPostsModel) // Save the individual post
+                        .addOnSuccessListener {
+                            hideProgressBar()
+                            Toast.makeText(this@PutForAdoptionActivity, "Posted successfully", Toast.LENGTH_SHORT).show()
+                            startActivity(Intent(this@PutForAdoptionActivity, HomePageActivity::class.java))
+                            finish() // Finish the activity after successful post and navigation
+                        }
+                        .addOnFailureListener { e ->
+                            hideProgressBar()
+                            Log.e("RealtimeDB", "Error saving adoption post: ${e.message}")
+                            Toast.makeText(this@PutForAdoptionActivity, "Post unsuccessful", Toast.LENGTH_SHORT).show()
                         }
 
                 }

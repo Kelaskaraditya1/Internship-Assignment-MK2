@@ -13,7 +13,7 @@ import com.example.straycaregsc.Models.AdoptPostsModel
 import com.example.straycaregsc.R
 import com.squareup.picasso.Picasso
 
-class AdoptPetAdapter(private val postModelArray: ArrayList<AdoptPostsModel>, val listener:AdoptPetAdapter.Listener):RecyclerView.Adapter<AdoptPetAdapter.ViewHolder>() {
+class AdoptPetAdapter(private val postModelArray: List<AdoptPostsModel>, val listener:AdoptPetAdapter.Listener):RecyclerView.Adapter<AdoptPetAdapter.ViewHolder>() {
     class ViewHolder(view: View):RecyclerView.ViewHolder(view){
         val tvPostTitleAP:TextView
         val tvUserNameAP:TextView
