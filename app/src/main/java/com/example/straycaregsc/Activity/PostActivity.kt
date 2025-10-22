@@ -21,12 +21,15 @@ import com.squareup.picasso.Picasso
 import android.content.Context
 import android.provider.OpenableColumns
 import com.example.straycaregsc.R
+import com.example.straycaregsc.keys.Keys
+import com.example.straycaregsc.utility.SupabaseConfiguration
 import com.google.firebase.database.FirebaseDatabase
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
 import java.io.IOException
 import java.io.InputStream
+import kotlin.jvm.java
 import kotlin.toString
 
 class PostActivity : AppCompatActivity() {
@@ -190,10 +193,10 @@ class PostActivity : AppCompatActivity() {
                 Log.i("adi", "started saving")
                 showProgressBar()
 
-                    uploadImageFromUri(
+                    SupabaseConfiguration.uploadImageFromUri(
                         context = this,
                         imageUri = postPath,
-                        fileName = getFileNameFromUri(context = this, uri = postPath)
+                        fileName = SupabaseConfiguration.getFileNameFromUri(context = this, uri = postPath)
                     ) { downloadUrl ->
                         runOnUiThread {
                             if (downloadUrl != null) {
@@ -257,71 +260,7 @@ class PostActivity : AppCompatActivity() {
         startActivity(Intent(this@PostActivity,HomePageActivity::class.java))
     }
 
-    fun uploadImageFromUri(
-        context: Context,
-        imageUri: Uri,
-        fileName: String,
-        onResult: (String?) -> Unit
-    ) {
-        val supabaseUrl = "https://hffgmmvfeulhhdifqdcb.supabase.co"
-        val supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhmZmdtbXZmZXVsaGhkaWZxZGNiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjA4MDM4NjYsImV4cCI6MjA3NjM3OTg2Nn0.op6j6zamhOuV4RvofD2yGHeVikjTT2x5M9cQXlW_Kgg"
-        val bucketName = "StrayCare"
 
-        try {
-            val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
-            val bytes = inputStream?.readBytes()
-
-            if (bytes == null) {
-                Log.e("UploadImage", "Failed to read image bytes")
-                onResult(null)
-                return
-            }
-
-            val client = OkHttpClient()
-            val mediaType = "image/jpeg".toMediaTypeOrNull()
-            val requestBody = bytes.toRequestBody(mediaType)
-
-            val request = Request.Builder()
-                .url("$supabaseUrl/storage/v1/object/$bucketName/$fileName")
-                .header("Authorization", "Bearer $supabaseKey")
-                .put(requestBody)
-                .build()
-
-            client.newCall(request).enqueue(object : Callback {
-                override fun onFailure(call: Call, e: IOException) {
-                    Log.e("UploadImage", "Upload failed: ${e.message}")
-                    onResult(null)
-                }
-
-                override fun onResponse(call: Call, response: Response) {
-                    if (response.isSuccessful) {
-                        val downloadUrl = "$supabaseUrl/storage/v1/object/public/$bucketName/$fileName"
-                        onResult(downloadUrl)
-                    } else {
-                        Log.e("UploadImage", "Upload failed: ${response.code} - ${response.message}")
-                        onResult(null)
-                    }
-                }
-            })
-        } catch (e: Exception) {
-            Log.e("UploadImage", "Unexpected error: ${e.message}")
-            onResult(null)
-        }
-    }
-
-
-    fun getFileNameFromUri(context: Context, uri: Uri): String {
-        var result: String? = null
-        if (uri.scheme == "content") {
-            val cursor = context.contentResolver.query(uri, null, null, null, null)
-            cursor?.use {
-                if (it.moveToFirst()) {
-                    result = it.getString(it.getColumnIndexOrThrow(OpenableColumns.DISPLAY_NAME))
-                }
-            }
-        }
-        return result ?: uri.lastPathSegment ?: "default.jpg"
-    }
 
 
 }
