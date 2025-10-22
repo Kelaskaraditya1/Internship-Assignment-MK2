@@ -1,4 +1,4 @@
-package com.example.straycaregsc.Activity
+package com.example.straycaregsc.activity
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle

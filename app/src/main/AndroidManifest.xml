@@ -14,44 +14,44 @@
         android:theme="@style/Theme.StrayCareGSC"
         tools:targetApi="31">
         <activity
-            android:name=".Activity.UserProfileActivity"
+            android:name=".activity.UserProfileActivity"
             android:exported="false">
             <meta-data
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
         <activity
-            android:name=".Activity.OurCommunity"
+            android:name=".activity.OurCommunity"
             android:exported="false" />
 
         <activity
-            android:name=".Activity.ProfileActiviy"
+            android:name=".activity.ProfileActiviy"
             android:exported="false" />
 
         <activity
-            android:name=".Activity.AdoptPetActivity"
+            android:name=".activity.AdoptPetActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.PutForAdoptionActivity"
+            android:name=".activity.PutForAdoptionActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.PostActivity"
+            android:name=".activity.PostActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.ProfileActivity"
+            android:name=".activity.ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.HomePageActivity"
+            android:name=".activity.HomePageActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.LoginActivity"
+            android:name=".activity.LoginActivity"
             android:exported="false" />
         <activity
-            android:name=".Activity.SignUpActivity"
+            android:name=".activity.SignUpActivity"
             android:exported="false" />
 
         <activity
-            android:name=".Activity.MainActivity"
+            android:name=".activity.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

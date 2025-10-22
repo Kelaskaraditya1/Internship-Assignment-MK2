@@ -1,6 +1,5 @@
-package com.example.straycaregsc.Fragments
+package com.example.straycaregsc.fragments
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -12,10 +11,9 @@ import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.example.straycaregsc.Adapters.AdoptPetAdapter
-import com.example.straycaregsc.Models.AdoptArrayModel // Assuming you still need this temporarily?
-import com.example.straycaregsc.Models.AdoptPostsModel // You need this model class
-import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.adapters.AdoptPetAdapter
+import com.example.straycaregsc.models.AdoptPostsModel // You need this model class
+import com.example.straycaregsc.models.UserModel
 import com.example.straycaregsc.R
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError

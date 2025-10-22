@@ -1,11 +1,9 @@
-package com.example.straycaregsc.Activity
+package com.example.straycaregsc.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.EditText
@@ -13,8 +11,8 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.example.straycaregsc.Models.AdoptArrayModel
-import com.example.straycaregsc.Models.AdoptPostsModel
+import com.example.straycaregsc.models.AdoptArrayModel
+import com.example.straycaregsc.models.AdoptPostsModel
 import com.example.straycaregsc.R
 import com.example.straycaregsc.utility.SupabaseConfiguration
 import com.google.android.gms.tasks.OnSuccessListener
@@ -22,15 +20,6 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import java.io.IOException
-import java.io.InputStream
 
 class PutForAdoptionActivity : AppCompatActivity() {
     private lateinit var backBtn:ImageView

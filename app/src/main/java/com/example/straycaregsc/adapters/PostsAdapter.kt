@@ -1,16 +1,14 @@
-package com.example.straycaregsc.Adapters
+package com.example.straycaregsc.adapters
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.straycaregsc.Models.GlobalPostsModel
-import com.example.straycaregsc.Models.PostModel
+import com.example.straycaregsc.models.GlobalPostsModel
+import com.example.straycaregsc.models.PostModel
 import com.example.straycaregsc.R
-import com.google.firebase.firestore.FirebaseFirestore
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
 

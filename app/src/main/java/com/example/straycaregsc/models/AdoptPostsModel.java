@@ -1,4 +1,4 @@
-package com.example.straycaregsc.Models;
+package com.example.straycaregsc.models;
 
 public class AdoptPostsModel {
 

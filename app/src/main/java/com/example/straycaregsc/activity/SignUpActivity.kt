@@ -1,4 +1,4 @@
-package com.example.straycaregsc.Activity
+package com.example.straycaregsc.activity
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -10,7 +10,7 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.models.UserModel
 import com.example.straycaregsc.R
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore

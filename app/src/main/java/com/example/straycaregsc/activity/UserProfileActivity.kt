@@ -1,35 +1,22 @@
-package com.example.straycaregsc.Activity
+package com.example.straycaregsc.activity
 
-import android.content.Context
 import android.content.Intent
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.OpenableColumns
 import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.models.UserModel
 import com.example.straycaregsc.R
 import com.example.straycaregsc.utility.SupabaseConfiguration
-import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.google.gson.Gson
 import com.squareup.picasso.Picasso
 import de.hdodenhof.circleimageview.CircleImageView
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.RequestBody.Companion.toRequestBody
-import okhttp3.Response
-import java.io.IOException
-import java.io.InputStream
 import kotlin.jvm.java
 
 class UserProfileActivity : AppCompatActivity() {

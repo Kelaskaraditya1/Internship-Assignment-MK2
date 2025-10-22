@@ -1,4 +1,4 @@
-package com.example.straycaregsc.Adapters
+package com.example.straycaregsc.adapters
 
 import android.util.Log
 import android.view.LayoutInflater
@@ -9,7 +9,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.example.straycaregsc.Models.AdoptPostsModel
+import com.example.straycaregsc.models.AdoptPostsModel
 import com.example.straycaregsc.R
 import com.squareup.picasso.Picasso
 

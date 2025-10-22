@@ -1,4 +1,4 @@
-package com.example.straycaregsc.Activity
+package com.example.straycaregsc.activity
 
 import android.content.Intent
 import android.net.Uri
@@ -11,24 +11,17 @@ import android.widget.ImageView
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
-import com.example.straycaregsc.Models.GlobalPostsModel
-import com.example.straycaregsc.Models.PostModel
-import com.example.straycaregsc.Models.UserModel
+import com.example.straycaregsc.models.GlobalPostsModel
+import com.example.straycaregsc.models.PostModel
+import com.example.straycaregsc.models.UserModel
 import com.google.android.gms.tasks.OnSuccessListener
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.squareup.picasso.Picasso
-import android.content.Context
-import android.provider.OpenableColumns
 import com.example.straycaregsc.R
-import com.example.straycaregsc.keys.Keys
 import com.example.straycaregsc.utility.SupabaseConfiguration
 import com.google.firebase.database.FirebaseDatabase
 import okhttp3.*
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody.Companion.toRequestBody
-import java.io.IOException
-import java.io.InputStream
 import kotlin.jvm.java
 import kotlin.toString
 
