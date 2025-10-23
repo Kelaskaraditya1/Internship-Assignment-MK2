@@ -21,6 +21,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.gson.Gson
 
 class HomePageActivity : AppCompatActivity() {
+
     var userDetails = UserModel()
     lateinit var uid: String
     lateinit var userName: String
@@ -29,9 +30,9 @@ class HomePageActivity : AppCompatActivity() {
     lateinit var fabPost: FloatingActionButton
     var userDetailsDownloaded = false
     var isAlreadyLoggedIn = false
-
     private lateinit var bottomNavigationView: BottomNavigationView
     lateinit var ivProfile: ImageView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_home_page)
@@ -148,6 +149,7 @@ private fun initialiseVariables() {
     ivOurCommunity = findViewById(R.id.ivOurCommunity)
     fabPost = findViewById(R.id.fabPost)
 }
+
 private fun changeFragment(fragment: Fragment){
     val fragmentManager = supportFragmentManager
     val fragmentTransaction = fragmentManager.beginTransaction()
